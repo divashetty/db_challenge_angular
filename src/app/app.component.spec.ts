@@ -65,6 +65,20 @@ describe('AppComponent', () => {
     })
   );
 
+  it('fist input field should be valid', () => {
+    const form = component.form;
+    expect(form.valid).toBeFalsy();
+    const firstInput = form.controls.firstInputDivisibleValue;
+    firstInput.setValue(120);
+    expect(firstInput.valid).toBeTruthy();
+  })
+  it('fist input field should not be valid', () => {
+    const form = component.form;
+    expect(form.valid).toBeFalsy();
+    const firstInput = form.controls.firstInputDivisibleValue;
+    firstInput.setValue('test');
+    expect(firstInput.valid).toBeFalsy();
+  })
 
 function sendInput(inputElement: any, text: number) {
   inputElement.value = text;
