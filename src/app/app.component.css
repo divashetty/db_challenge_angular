@@ -15,9 +15,7 @@
     margin: 10px 5px;
     box-sizing: border-box;  
 }
-input[type=text]:focus {
-    border: 1px solid #1696e0; 
-}
+
 input.ng-dirty.ng-invalid {
     border: 1px solid red;
   }

@@ -1,23 +1,24 @@
 <div class="container">
+	<h1>Welcome to Devider app!</h1>
 <form [formGroup]="form" (ngSubmit)="submit()">
  <div class="form-wrapper">
 	<div>
-		<label for="firstValue">Add Initial Value</label>
-		<input type="text" id='firstValue' formControlName="firstInputDivisibleValue">
+		<label for="firstValue" id="Initial">Add Initial Value</label>
+		<input type="text" name="first" id='firstValue' placeholder="Please enter first number" formControlName="firstInputDivisibleValue">
 		<div class="validation-error" *ngIf="f.firstInputDivisibleValue.invalid && f.firstInputDivisibleValue.dirty">
 			Please enter valid numeric valuess
 		</div>
 	</div>
 	<div>
-		<label for="secondValue">Add Devider value</label>
-		<input formControlName="secondInputDivisibleValue" id="secondValue" type="text"/>
+		<label for="secondValue" id="second">Add Devider value</label>
+		<input formControlName="secondInputDivisibleValue" placeholder="Please enter second number" name="second" id="secondValue" type="text"/>
 		<div class="validation-error" *ngIf="f.secondInputDivisibleValue.invalid && f.secondInputDivisibleValue.dirty">
 			Please enter valid numeric valuess
 		</div>
 	</div>
 	<div>
-		<label>Total Result</label>
-		<input type="text" formControlName="divisibleResultValue" id="result"
+		<label id="totalResult">Total Result</label>
+		<input type="text" formControlName="divisibleResultValue" placeholder="result" name="result" id="result"
     >
 	</div>
   <button type="submit">submit</button>

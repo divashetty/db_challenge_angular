@@ -1,7 +1,9 @@
-import { TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed,fakeAsync,tick } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 describe('AppComponent', () => {
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [
@@ -9,59 +11,105 @@ describe('AppComponent', () => {
       ],
       imports: [
         ReactiveFormsModule,
-        FormsModule
-    ]
+        FormsModule,
+        CommonModule,
+
+      ],
     }).compileComponents();
   });
+  let component: AppComponent;
+  let firstInput:any;
+  let secondInput:any;
+  let result:any;
+  let fixture: ComponentFixture<AppComponent>;
  
+  beforeEach(() => {
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
+    firstInput = fixture.nativeElement.querySelector('#firstValue');
+    secondInput = fixture.nativeElement.querySelector('#secondValue');
+    result = fixture.nativeElement.querySelector('#result');
+    fixture.detectChanges();
+    fixture.whenStable();
+  });
+
+
+
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+    expect(component).toBeTruthy();
   });
 
-  it(`should have as title 'db-challenge-app'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('db-challenge-app');
+  it('should have as title db-challenge-app', () => {
+    expect(component.title).toEqual('db-challenge-app');
   });
 
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('db-challenge-app app is running!');
+  it('should render header \'Welcome to app!!\' in a h1 tag',
+    async(() => {
+      const compiled = fixture.debugElement.nativeElement;
+      expect(compiled.querySelector('h1').textContent).toContain('Welcome to Devider app!');
+    })
+  );
+  it('should render first input label ', () => {
+    let firstLabel = fixture.nativeElement.querySelector('#Initial');
+    expect(firstLabel.textContent).toContain('Add Initial Value');
+  });
+  it('should render second input label', () => {
+    let lable = fixture.nativeElement.querySelector('#second');
+    expect(lable.textContent).toContain('Add Devider value');
   });
 
-  it('should display result', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement;
-    compiled.querySelector('#firstValue').value = 120;
-    compiled.querySelector('#secondValue').value = 12;
-    expect(compiled.querySelector('#result').value).toEqual(120/12);
-  });
+  it('should render label total result',
+    async(() => {
+      const compiled = fixture.debugElement.nativeElement;
+      expect(compiled.querySelector('#totalResult').textContent).toContain('Total Result');
+    })
+  );
 
-  it('should first divident field valid', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement;
-    let divident = compiled.form.controls['firstInputDivisibleValue'];
-    expect(divident.valid).toBeFalsy();
-    divident.setValue("");
-    expect(divident.hasError('required')).toBeTruthy();
-    divident.setValue("123");
-    expect(divident.hasError('minLength')).toBeTruthy();
-});
-it('should second divident field valid', () => {
-  const fixture = TestBed.createComponent(AppComponent);
+
+function sendInput(inputElement: any, text: number) {
+  inputElement.value = text;
+  inputElement.dispatchEvent(new Event('change'));
   fixture.detectChanges();
-  const compiled = fixture.nativeElement;
-  let secDivident = compiled.form.controls['secondInputDivisibleValue'];
-  expect(secDivident.valid).toBeFalsy();
-  secDivident.setValue("");
-  expect(secDivident.hasError('required')).toBeTruthy();
-  secDivident.setValue("3");
-  expect(secDivident.hasError('minLength')).toBeTruthy();
+  return fixture.whenStable();
+}
+
+it('should call value changes and display result', async(() => {
+  sendInput(firstInput, 120)
+  .then(() => {
+      return sendInput(secondInput, 20)
+  }).then(() => {
+    return sendInput(result, 120/20)
+  }).then(() => {
+    expect(parseInt(result.value)).toEqual(6);
+      fixture.detectChanges();
+  });
+}));
+
+
+it('first field should be valid', async(() => {
+  sendInput(firstInput, 120)
+  .then(() => {
+    expect(parseInt(firstInput.validity.valid)).toBeTrue;
+  });
+}));
+
+  it('should allow us to set a bound input field', fakeAsync(() => {
+    setInputValue(firstInput, 120); 
+    setInputValue(secondInput, 20);  
+    setInputValue(result, 6);   
+    expect(parseInt(firstInput.value)).toEqual(120);
+    expect(parseInt(secondInput.value)).toEqual(20);
+    expect(parseInt(result.value)).toEqual(120/20);
+  }));
+  // must be called from within fakeAsync due to use of tick()
+  function setInputValue(inputElement: any, text: number) {
+    fixture.detectChanges();
+    tick();
+    inputElement.value = text;
+    inputElement.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+  }
 });
-});
+   
+  
+

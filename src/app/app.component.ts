@@ -7,16 +7,16 @@ import { FormGroup, FormBuilder, Validators } from "@angular/forms";
   styleUrls: ["./app.component.css"]
 })
 export class AppComponent {
-  public title="b-challenge-app";
+  title="db-challenge-app";
   public form!: FormGroup;
   public purchaseprice!: number;
   public purchasepricetaxes!: number;
   public timer:any;
+  
   constructor(private fb: FormBuilder) {
-    this.createForm();
+    this.createForm();    
     this.form.valueChanges.subscribe(data => {
-      const {firstInputDivisibleValue, secondInputDivisibleValue} =data;
-      
+      const {firstInputDivisibleValue, secondInputDivisibleValue} =data; 
       clearTimeout(this.timer)
       if(this.form.invalid) return;
       this.timer = setTimeout(()=>{
@@ -29,13 +29,13 @@ export class AppComponent {
   }
 
   get f(){
-    return this.form.controls;
+    return this.form.controls ;
   }
 
   createForm() {
     this.form = this.fb.group({
-      firstInputDivisibleValue: ["", Validators.pattern(/^-?(0|[1-9]\d*)?$/)],
-      secondInputDivisibleValue: ["", Validators.pattern(/^-?(0|[1-9]\d*)?$/)],
+      firstInputDivisibleValue: ["", [Validators.required,Validators.pattern(/^-?(0|[1-9]\d*)?$/)]],
+      secondInputDivisibleValue: ["", [Validators.required,Validators.pattern(/^-?(0|[1-9]\d*)?$/)]],
       divisibleResultValue: [""]
     });
   }
