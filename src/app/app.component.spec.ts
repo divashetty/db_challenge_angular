@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed,fakeAsync,tick } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { FormsModule, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -18,11 +18,11 @@ describe('AppComponent', () => {
     }).compileComponents();
   });
   let component: AppComponent;
-  let firstInput:any;
-  let secondInput:any;
-  let result:any;
+  let firstInput: any;
+  let secondInput: any;
+  let result: any;
   let fixture: ComponentFixture<AppComponent>;
- 
+
   beforeEach(() => {
     fixture = TestBed.createComponent(AppComponent);
     component = fixture.componentInstance;
@@ -80,40 +80,49 @@ describe('AppComponent', () => {
     expect(firstInput.valid).toBeFalsy();
   })
 
-function sendInput(inputElement: any, text: number) {
-  inputElement.value = text;
-  inputElement.dispatchEvent(new Event('change'));
-  fixture.detectChanges();
-  return fixture.whenStable();
-}
+  it('should test input errors', () => {
+    let firstDevider = component.form.controls.firstInputDivisibleValue;
+    expect(firstDevider.errors!.required).toBeTruthy();
+    firstDevider.setValue(120);
+    expect(firstDevider.errors).toBeNull();
+});
 
-it('should call value changes and display result', async(() => {
-  sendInput(firstInput, 120)
-  .then(() => {
-      return sendInput(secondInput, 20)
-  }).then(() => {
-    return sendInput(result, 120/20)
-  }).then(() => {
-    expect(parseInt(result.value)).toEqual(6);
-      fixture.detectChanges();
-  });
-}));
+  it('fist second field should not be valid', () => {
+    const form = component.form;
+    expect(form.valid).toBeFalsy();
+    const firstInput = form.controls.firstInputDivisibleValue;
+    const secondInput = form.controls.secondInputDivisibleValue;
+    firstInput.setValue(120);
+    secondInput.setValue(120);
+    expect(form.valid).toBeTruthy();
+  })
 
+  function sendInput(inputElement: any, text: number) {
+    inputElement.value = text;
+    inputElement.dispatchEvent(new Event('change'));
+    fixture.detectChanges();
+    return fixture.whenStable();
+  }
 
-it('first field should be valid', async(() => {
-  sendInput(firstInput, 120)
-  .then(() => {
-    expect(parseInt(firstInput.validity.valid)).toBeTrue;
-  });
-}));
+  it('should call value changes and display result', async(() => {
+    sendInput(firstInput, 120)
+      .then(() => {
+        return sendInput(secondInput, 20)
+      }).then(() => {
+        return sendInput(result, 120 / 20)
+      }).then(() => {
+        expect(parseInt(result.value)).toEqual(6);
+        fixture.detectChanges();
+      });
+  }));
 
   it('should allow us to set a bound input field', fakeAsync(() => {
-    setInputValue(firstInput, 120); 
-    setInputValue(secondInput, 20);  
-    setInputValue(result, 6);   
+    setInputValue(firstInput, 120);
+    setInputValue(secondInput, 20);
+    setInputValue(result, 6);
     expect(parseInt(firstInput.value)).toEqual(120);
     expect(parseInt(secondInput.value)).toEqual(20);
-    expect(parseInt(result.value)).toEqual(120/20);
+    expect(parseInt(result.value)).toEqual(120 / 20);
   }));
   // must be called from within fakeAsync due to use of tick()
   function setInputValue(inputElement: any, text: number) {
@@ -124,6 +133,6 @@ it('first field should be valid', async(() => {
     fixture.detectChanges();
   }
 });
-   
-  
+
+
 
