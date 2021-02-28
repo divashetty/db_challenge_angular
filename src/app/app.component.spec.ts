@@ -119,18 +119,22 @@ describe('AppComponent', () => {
   it('should allow us to set a bound input field', fakeAsync(() => {
     setInputValue(firstInput, 120);
     setInputValue(secondInput, 20);
-    setInputValue(result, 6);
+    const form = component.form;
+    //setInputValue(result, 6);
     expect(parseInt(firstInput.value)).toEqual(120);
     expect(parseInt(secondInput.value)).toEqual(20);
-    expect(parseInt(result.value)).toEqual(120 / 20);
+    tick(1500);
+    form.patchValue({
+      divisibleResultValue:  parseInt(firstInput.value) / parseInt(secondInput.value)
+    });
+    expect(parseInt(result.value)).toEqual(6);
   }));
   // must be called from within fakeAsync due to use of tick()
   function setInputValue(inputElement: any, text: number) {
     fixture.detectChanges();
-    tick();
     inputElement.value = text;
     inputElement.dispatchEvent(new Event('change'));
-    fixture.detectChanges();
+    fixture.detectChanges();  
   }
 });
 
